@@ -18,7 +18,7 @@ build: NAME TAG builddocker
 run: build rundocker
 
 # run a  container that requires mysql temporarily
-temp: MYSQL_PASS rm build runtemp
+temp: rm build runtemp
 
 prod: NGINX_DATADIR rm build runprod
 
@@ -32,8 +32,6 @@ rundocker:
 	-v $(TMP):/tmp \
 	-d \
 	-P \
-	-v /var/run/docker.sock:/run/docker.sock \
-	-v $(shell which docker):/bin/docker \
 	-t $(TAG)
 
 runtemp:
@@ -46,8 +44,6 @@ runtemp:
 	-v $(TMP):/tmp \
 	-d \
 	-P \
-	-v /var/run/docker.sock:/run/docker.sock \
-	-v $(shell which docker):/bin/docker \
 	-t $(TAG)
 
 runprod:
@@ -64,9 +60,8 @@ runprod:
 	-v $(TMP):/tmp \
 	-d \
 	-P \
-	-v /var/run/docker.sock:/run/docker.sock \
-	-v $(NGINX_DATADIR):/var/www/html \
-	-v $(shell which docker):/bin/docker \
+	-v $(NGINX_DATADIR)/etc:/etc \
+	-v $(NGINX_DATADIR)/html:/usr/share/nginx/html \
 	-t $(TAG)
 
 builddocker:
@@ -101,13 +96,19 @@ TAG:
 
 rmall: rm
 
-grab: grabnginxdir
+grab: grabnginxdir mvdatadir
 
 grabnginxdir:
-	-mkdir -p datadir
-	docker cp `cat cid`:/var/www/html datadir/
+	mkdir -p datadir
+	docker cp `cat cid`:/usr/share/nginx/html - |sudo tar -C datadir/ -pxvf -
+	docker cp `cat cid`:/etc - |sudo tar -C datadir/ -pxvf -
 	sudo chown -R $(user). datadir/html
-	echo `pwd`/datadir/html > NGINX_DATADIR
+	sudo chown -R $(user). datadir/etc
+
+mvdatadir:
+	sudo mv -i datadir /tmp
+	echo /tmp/datadir > NGINX_DATADIR
+	echo "Move datadir out of tmp and update DATADIR here accordingly for persistence"
 
 NGINX_DATADIR:
 	@while [ -z "$$NGINX_DATADIR" ]; do \
