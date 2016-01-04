@@ -57,7 +57,8 @@ runprod:
 	--cidfile="cid" \
 	-v $(TMP):/tmp \
 	-d \
-	-P \
+	-p 80:80 \
+	-p 443:443 \
 	-v $(NGINX_DATADIR)/etc:/etc \
 	-v $(NGINX_DATADIR)/html:/usr/share/nginx/html \
 	-t $(TAG)
