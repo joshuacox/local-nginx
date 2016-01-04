@@ -48,9 +48,7 @@ runtemp:
 
 runprod:
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
-	ifeq ($(NGINX_DATADIR),'')
-	$(error  "try make runtemp and then make grab once you have initialized your installation")
-	endif
+	echo " the nginx data dir is $(NGINX_DATADIR)"
 	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
 	$(eval NAME := $(shell cat NAME))
 	$(eval TAG := $(shell cat TAG))

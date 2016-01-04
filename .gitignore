@@ -1,7 +1,3 @@
 cid
-mysqlcid
-mysqltemp
-datadir
-APACHE_DATADIR
-MYSQL_DATADIR
-MYSQL_PASS
+NGINX_DATADIR
+
