@@ -14,25 +14,10 @@ help:
 
 build: NAME TAG builddocker
 
-# run a plain container
-run: build rundocker
-
-# run a  container that requires mysql temporarily
+# run a  container temporarily to grab the config directory
 temp: rm build runtemp
 
 prod: NGINX_DATADIR rm build runprod
-
-rundocker:
-	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
-	$(eval NAME := $(shell cat NAME))
-	$(eval TAG := $(shell cat TAG))
-	chmod 777 $(TMP)
-	@docker run --name=$(NAME) \
-	--cidfile="cid" \
-	-v $(TMP):/tmp \
-	-d \
-	-P \
-	-t $(TAG)
 
 runtemp:
 	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
@@ -59,7 +44,7 @@ runprod:
 	-d \
 	-p 80:80 \
 	-p 443:443 \
-	-v $(NGINX_DATADIR)/etc:/etc \
+	-v $(NGINX_DATADIR)/etc/nginx:/etc/nginx \
 	-v $(NGINX_DATADIR)/html:/usr/share/nginx/html \
 	-t $(TAG)
 
