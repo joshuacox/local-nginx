@@ -1,10 +1,10 @@
-FROM local-jessie
+FROM local-stretch
 MAINTAINER Josh Cox <josh 'at' webhosting.coop>
 
-ENV DOCKER_PROTOTYPE 20160104
+ENV DOCKER_PROTOTYPE 20160511
 ENV DEBIAN_FRONTEND noninteractive
 ENV LANG en_US.UTF-8
-#ENV NGINX_VERSION 1.9.9-1~jessie
+#ENV NGINX_VERSION 1.9.9-1~stretch
 #apt-get install -y ca-certificates nginx=${NGINX_VERSION} && \
 
 RUN apt-get -qq update ; \
