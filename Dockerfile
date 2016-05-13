@@ -11,7 +11,7 @@ RUN apt-get -qq update ; \
 apt-get -qqy dist-upgrade ; \
 apt-get -qqy --no-install-recommends install locales \
 sudo procps ca-certificates wget pwgen supervisor; \
-apt-get install -y ca-certificates nginx && \
+apt-get install -y ca-certificates nginx letsencrypt && \
 echo 'en_US.ISO-8859-15 ISO-8859-15'>>/etc/locale.gen ; \
 echo 'en_US ISO-8859-1'>>/etc/locale.gen ; \
 echo 'en_US.UTF-8 UTF-8'>>/etc/locale.gen ; \
