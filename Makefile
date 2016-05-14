@@ -46,6 +46,7 @@ runprod:
 	-p 443:443 \
 	-v $(NGINX_DATADIR)/etc/nginx:/etc/nginx \
 	-v $(NGINX_DATADIR)/html:/usr/share/nginx/html \
+	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
 	-t $(TAG)
 
 builddocker:
