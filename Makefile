@@ -99,3 +99,25 @@ NGINX_DATADIR:
 	@while [ -z "$$NGINX_DATADIR" ]; do \
 		read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [NGINX_DATADIR]: " NGINX_DATADIR; echo "$$NGINX_DATADIR">>NGINX_DATADIR; cat NGINX_DATADIR; \
 	done ;
+
+newcert: rmcertstuff CERTSITE CERTMAIL mkcert
+
+rmcertstuff:
+	rm CERTSITE
+	rm CERTMAIL
+
+CERTSITE:
+	@while [ -z "$$CERTSITE" ]; do \
+		read -r -p "Enter the site name you wish to retrieve a certificate for [CERTSITE]: " CERTSITE; echo "$$CERTSITE">>CERTSITE; cat CERTSITE; \
+	done ;
+
+CERTMAIL:
+	@while [ -z "$$CERTMAIL" ]; do \
+		read -r -p "Enter the site email [CERTMAIL]: " CERTMAIL; echo "$$CERTMAIL">>CERTMAIL; cat CERTMAIL; \
+	done ;
+
+mkcert:
+	$(eval CERTSITE := $(shell cat CERTSITE))
+	$(eval CERTMAIL := $(shell cat CERTMAIL))
+	cd ~/certbot
+	./certbot-auto certonly --standalone -n -d $(CERTSITE) --email "$(CERTMAIL)"
