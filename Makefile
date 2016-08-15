@@ -103,8 +103,8 @@ NGINX_DATADIR:
 newcert: rmcertstuff CERTSITE CERTMAIL mkcert
 
 rmcertstuff:
-	rm CERTSITE
-	rm CERTMAIL
+	-@rm CERTSITE
+	-@rm CERTMAIL
 
 CERTSITE:
 	@while [ -z "$$CERTSITE" ]; do \
