@@ -119,5 +119,4 @@ CERTMAIL:
 mkcert:
 	$(eval CERTSITE := $(shell cat CERTSITE))
 	$(eval CERTMAIL := $(shell cat CERTMAIL))
-	cd ~/certbot
-	./certbot-auto certonly --standalone -n -d $(CERTSITE) --email "$(CERTMAIL)"
+	~/git/certbot-auto certonly --standalone -n -d $(CERTSITE) --email "$(CERTMAIL)"
