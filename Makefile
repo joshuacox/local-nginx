@@ -100,7 +100,7 @@ NGINX_DATADIR:
 		read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [NGINX_DATADIR]: " NGINX_DATADIR; echo "$$NGINX_DATADIR">>NGINX_DATADIR; cat NGINX_DATADIR; \
 	done ;
 
-newcert: rmcertstuff CERTSITE CERTMAIL mkcert
+newcert: rmcertstuff CERTSITE CERTMAIL rm mkcert runprod
 
 rmcertstuff:
 	-@rm CERTSITE
