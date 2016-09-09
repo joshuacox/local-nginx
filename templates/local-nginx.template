@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: REPLACEME_NAME
+spec:
+  containers:
+      - image: REPLACEME_REGISTRY:REPLACEME_REGISTRY_PORT/REPLACEME_TAG
+    name: REPLACEME_NAME
+    volumeMounts:
+    - mountPath: /etc/nginx
+      name: REPLACEME_NAME-etc
+    - mountPath: /usr/share/nginx/html
+      name: REPLACEME_NAME-html
+    - mountPath: /etc/letsencrypt
+      name: REPLACEME_NAME-letsencrypt
+  volumes:
+  - name: REPLACEME_NAME-etc
+    hostPath:
+        path: REPLACEME_DATADIR/etc/nginx
+  - name: REPLACEME_NAME-html
+    hostPath:
+        path: REPLACEME_DATADIR/html
+  - name: REPLACEME_NAME-letsencrypt
+    hostPath:
+        path: REPLACEME_DATADIR/etc/letsencrypt
