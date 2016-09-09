@@ -147,7 +147,7 @@ local-nginx.yaml: NGINX_DATADIR REGISTRY REGISTRY_PORT TAG NAME
 	cp -i templates/local-nginx.template local-nginx.yaml
 	sed -i "s!REPLACEME_DATADIR!$(NGINX_DATADIR)!g" local-nginx.yaml
 	sed -i "s/REPLACEME_REGISTRY/$(REGISTRY)/g" local-nginx.yaml
-	sed -i "s/REPLACEME_REGISTRY_PORT/$(REGISTRY_PORT)/g" local-nginx.yaml
+	sed -i "s/REPLACEME_PORT_OF_REGISTRY/$(REGISTRY_PORT)/g" local-nginx.yaml
 	sed -i "s!REPLACEME_TAG!$(TAG)!g" local-nginx.yaml
 	sed -i "s!REPLACEME_NAME!$(NAME)!g" local-nginx.yaml
 
