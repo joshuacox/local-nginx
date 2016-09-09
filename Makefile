@@ -148,8 +148,8 @@ local-nginx.yaml: NGINX_DATADIR REGISTRY REGISTRY_PORT TAG NAME
 	sed -i "s!REPLACEME_DATADIR!$(NGINX_DATADIR)!g" local-nginx.yaml
 	sed -i "s/REPLACEME_REGISTRY/$(REGISTRY)/g" local-nginx.yaml
 	sed -i "s/REPLACEME_REGISTRY_PORT/$(REGISTRY_PORT)/g" local-nginx.yaml
-	sed -i "s/REPLACEME_TAG/$(TAG)/g" local-nginx.yaml
-	sed -i "s/REPLACEME_NAME/$(NAME)/g" local-nginx.yaml
+	sed -i "s!REPLACEME_TAG!$(TAG)!g" local-nginx.yaml
+	sed -i "s!REPLACEME_NAME!$(NAME)!g" local-nginx.yaml
 
 k8svc: local-nginx.yaml
 	kubectl create -f local-nginx.yaml
