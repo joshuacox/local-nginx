@@ -44,8 +44,8 @@ runprod:
 	-d \
 	-p 80:80 \
 	-p 443:443 \
-	-v $(NGINX_DATADIR)/etc/nginx:/etc/nginx \
-	-v $(NGINX_DATADIR)/html:/usr/share/nginx/html \
+	-v "$(NGINX_DATADIR)/etc/nginx:/etc/nginx" \
+	-v "$(NGINX_DATADIR)/html:/usr/share/nginx/html" \
 	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
 	-t $(TAG)
 
@@ -137,3 +137,19 @@ push: TAG REGISTRY REGISTRY_PORT
 	$(eval REGISTRY_PORT := $(shell cat REGISTRY_PORT))
 	docker tag $(TAG) $(REGISTRY):$(REGISTRY_PORT)/$(TAG)
 	docker push $(REGISTRY):$(REGISTRY_PORT)/$(TAG)
+
+local-nginx.yaml: NGINX_DATADIR REGISTRY REGISTRY_PORT TAG NAME
+	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
+	$(eval REGISTRY := $(shell cat REGISTRY))
+	$(eval REGISTRY_PORT := $(shell cat REGISTRY_PORT))
+	$(eval TAG := $(shell cat TAG))
+	$(eval NAME := $(shell cat NAME))
+	cp -i templates/local-nginx.yaml local-nginx.yaml
+	sed -i "s/REPLACEME_DATADIR/$(NGINX_DATADIR)/g" local-nginx.yaml
+	sed -i "s/REPLACEME_REGISTRY/$(REGISTRY)/g" local-nginx.yaml
+	sed -i "s/REPLACEME_REGISTRY_PORT/$(REGISTRY_PORT)/g" local-nginx.yaml
+	sed -i "s/REPLACEME_TAG/$(TAG)/g" local-nginx.yaml
+	sed -i "s/REPLACEME_NAME/$(NAME)/g" local-nginx.yaml
+
+k8svc: local-nginx.yaml
+	kubectl create -f local-nginx.yaml
