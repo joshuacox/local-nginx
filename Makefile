@@ -144,12 +144,12 @@ local-nginx-svc.yaml: NGINX_DATADIR REGISTRY REGISTRY_PORT TAG NAME
 	$(eval REGISTRY_PORT := $(shell cat REGISTRY_PORT))
 	$(eval TAG := $(shell cat TAG))
 	$(eval NAME := $(shell cat NAME))
-	cp -i templates/local-nginx-svc.template local-nginx.yaml
-	sed -i "s!REPLACEME_DATADIR!$(NGINX_DATADIR)!g" local-nginx.yaml
-	sed -i "s/REPLACEME_REGISTRY/$(REGISTRY)/g" local-nginx.yaml
-	sed -i "s/REPLACEME_PORT_OF_REGISTRY/$(REGISTRY_PORT)/g" local-nginx.yaml
-	sed -i "s!REPLACEME_TAG!$(TAG)!g" local-nginx.yaml
-	sed -i "s!REPLACEME_NAME!$(NAME)!g" local-nginx.yaml
+	cp -i templates/local-nginx-svc.template local-nginx-svc.yaml
+	sed -i "s!REPLACEME_DATADIR!$(NGINX_DATADIR)!g" local-nginx-svc.yaml
+	sed -i "s/REPLACEME_REGISTRY/$(REGISTRY)/g" local-nginx-svc.yaml
+	sed -i "s/REPLACEME_PORT_OF_REGISTRY/$(REGISTRY_PORT)/g" local-nginx-svc.yaml
+	sed -i "s!REPLACEME_TAG!$(TAG)!g" local-nginx-svc.yaml
+	sed -i "s!REPLACEME_NAME!$(NAME)!g" local-nginx-svc.yaml
 
 local-nginx-deploy.yaml: NGINX_DATADIR REGISTRY REGISTRY_PORT TAG NAME
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
@@ -157,12 +157,12 @@ local-nginx-deploy.yaml: NGINX_DATADIR REGISTRY REGISTRY_PORT TAG NAME
 	$(eval REGISTRY_PORT := $(shell cat REGISTRY_PORT))
 	$(eval TAG := $(shell cat TAG))
 	$(eval NAME := $(shell cat NAME))
-	cp -i templates/local-nginx-deploy.template local-nginx.yaml
-	sed -i "s!REPLACEME_DATADIR!$(NGINX_DATADIR)!g" local-nginx.yaml
-	sed -i "s/REPLACEME_REGISTRY/$(REGISTRY)/g" local-nginx.yaml
-	sed -i "s/REPLACEME_PORT_OF_REGISTRY/$(REGISTRY_PORT)/g" local-nginx.yaml
-	sed -i "s!REPLACEME_TAG!$(TAG)!g" local-nginx.yaml
-	sed -i "s!REPLACEME_NAME!$(NAME)!g" local-nginx.yaml
+	cp -i templates/local-nginx-deploy.template local-nginx-deploy.yaml
+	sed -i "s!REPLACEME_DATADIR!$(NGINX_DATADIR)!g" local-nginx-deploy.yaml
+	sed -i "s/REPLACEME_REGISTRY/$(REGISTRY)/g" local-nginx-deploy.yaml
+	sed -i "s/REPLACEME_PORT_OF_REGISTRY/$(REGISTRY_PORT)/g" local-nginx-deploy.yaml
+	sed -i "s!REPLACEME_TAG!$(TAG)!g" local-nginx-deploy.yaml
+	sed -i "s!REPLACEME_NAME!$(NAME)!g" local-nginx-deploy.yaml
 
 k8s: k8deploy k8svc
 
