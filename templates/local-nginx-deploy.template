@@ -6,6 +6,7 @@ spec:
   containers:
   - image: REPLACEME_REGISTRY:REPLACEME_PORT_OF_REGISTRY/REPLACEME_TAG
     name: REPLACEME_NAME
+    ports: 80
     volumeMounts:
     - mountPath: /etc/nginx
       name: REPLACEME_NAME-etc

@@ -138,18 +138,36 @@ push: TAG REGISTRY REGISTRY_PORT
 	docker tag $(TAG) $(REGISTRY):$(REGISTRY_PORT)/$(TAG)
 	docker push $(REGISTRY):$(REGISTRY_PORT)/$(TAG)
 
-local-nginx.yaml: NGINX_DATADIR REGISTRY REGISTRY_PORT TAG NAME
+local-nginx-svc.yaml: NGINX_DATADIR REGISTRY REGISTRY_PORT TAG NAME
 	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
 	$(eval REGISTRY := $(shell cat REGISTRY))
 	$(eval REGISTRY_PORT := $(shell cat REGISTRY_PORT))
 	$(eval TAG := $(shell cat TAG))
 	$(eval NAME := $(shell cat NAME))
-	cp -i templates/local-nginx.template local-nginx.yaml
+	cp -i templates/local-nginx-svc.template local-nginx.yaml
 	sed -i "s!REPLACEME_DATADIR!$(NGINX_DATADIR)!g" local-nginx.yaml
 	sed -i "s/REPLACEME_REGISTRY/$(REGISTRY)/g" local-nginx.yaml
 	sed -i "s/REPLACEME_PORT_OF_REGISTRY/$(REGISTRY_PORT)/g" local-nginx.yaml
 	sed -i "s!REPLACEME_TAG!$(TAG)!g" local-nginx.yaml
 	sed -i "s!REPLACEME_NAME!$(NAME)!g" local-nginx.yaml
 
-k8svc: local-nginx.yaml
-	kubectl create -f local-nginx.yaml
+local-nginx-deploy.yaml: NGINX_DATADIR REGISTRY REGISTRY_PORT TAG NAME
+	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
+	$(eval REGISTRY := $(shell cat REGISTRY))
+	$(eval REGISTRY_PORT := $(shell cat REGISTRY_PORT))
+	$(eval TAG := $(shell cat TAG))
+	$(eval NAME := $(shell cat NAME))
+	cp -i templates/local-nginx-deploy.template local-nginx.yaml
+	sed -i "s!REPLACEME_DATADIR!$(NGINX_DATADIR)!g" local-nginx.yaml
+	sed -i "s/REPLACEME_REGISTRY/$(REGISTRY)/g" local-nginx.yaml
+	sed -i "s/REPLACEME_PORT_OF_REGISTRY/$(REGISTRY_PORT)/g" local-nginx.yaml
+	sed -i "s!REPLACEME_TAG!$(TAG)!g" local-nginx.yaml
+	sed -i "s!REPLACEME_NAME!$(NAME)!g" local-nginx.yaml
+
+k8s: k8deploy k8svc
+
+k8svc: local-nginx-svc.yaml
+	kubectl create -f local-nginx-svc.yaml
+
+k8deploy: local-nginx-deploy.yaml
+	kubectl create -f local-nginx-deploy.yaml
