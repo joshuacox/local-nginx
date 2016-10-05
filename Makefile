@@ -207,11 +207,20 @@ cleansite:
 
 SITENAME:
 	@while [ -z "$$SITENAME" ]; do \
-		read -r -p "Enter the name you wish to associate with this container [SITENAME]: " SITENAME; echo "$$SITENAME">>SITENAME; cat SITENAME; \
+		read -r -p "Enter the sitename you wish to associate with this container [SITENAME e.g. 'www']: " SITENAME; echo "$$SITENAME">>SITENAME; cat SITENAME; \
 	done ;
 
 DOMAIN:
 	@while [ -z "$$DOMAIN" ]; do \
-		read -r -p "Enter the name you wish to associate with this container [DOMAIN]: " DOMAIN; echo "$$DOMAIN">>DOMAIN; cat DOMAIN; \
+		read -r -p "Enter the DOMAIN you wish to associate with this container [DOMAIN e.g. 'example.com']: " DOMAIN; echo "$$DOMAIN">>DOMAIN; cat DOMAIN; \
 	done ;
 
+IP:
+	@while [ -z "$$IP" ]; do \
+		read -r -p "Enter the IP you wish to associate with this container [IP e.g. '192.168.1.133']: " IP; echo "$$IP">>IP; cat IP; \
+	done ;
+
+PORT:
+	@while [ -z "$$PORT" ]; do \
+		read -r -p "Enter the PORT you wish to associate with this container [PORT e.g. '8080']: " PORT; echo "$$PORT">>PORT; cat PORT; \
+	done ;
