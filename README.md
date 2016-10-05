@@ -44,6 +44,14 @@ cat git/local-nginx/NGINX_DATADIR
 /exports/nginx/datadir
 ```
 
+### Nusite
+
+```
+make nusite
+```
+
+will prompt you for a few details and then copy `templates/site.template` into your NGNIX_DATADIR
+
 ### Let's Encrypt
 
 you can automate the retrieval and creation of SSL/TLS certificates using Let's Encrypt

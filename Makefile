@@ -202,3 +202,14 @@ cleansite:
 	-@rm PORT
 	-@rm DOMAIN
 	-@rm IP
+
+SITENAME:
+	@while [ -z "$$SITENAME" ]; do \
+		read -r -p "Enter the name you wish to associate with this container [SITENAME]: " SITENAME; echo "$$SITENAME">>SITENAME; cat SITENAME; \
+	done ;
+
+DOMAIN:
+	@while [ -z "$$DOMAIN" ]; do \
+		read -r -p "Enter the name you wish to associate with this container [DOMAIN]: " DOMAIN; echo "$$DOMAIN">>DOMAIN; cat DOMAIN; \
+	done ;
+
