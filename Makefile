@@ -184,7 +184,7 @@ site: SITENAME DOMAIN IP PORT NGINX_DATADIR
 	echo $(DOMAIN)
 	echo "$(SITENAME).$(DOMAIN)" > CERTSITE
 	echo "webmaster@$(SITENAME).$(DOMAIN)" > CERTMAIL
-	cp template/site.template $(TMP)/$(SITENAME).$(DOMAIN)
+	cp templates/site.template $(TMP)/$(SITENAME).$(DOMAIN)
 	sed -i "s/REPLACEME_PORT/$(PORT)/g" $(TMP)/$(SITENAME).$(DOMAIN)
 	sed -i "s/REPLACEME_IP/$(IP)/g" $(TMP)/$(SITENAME).$(DOMAIN)
 	sed -i "s/REPLACEME_DOMAIN/$(DOMAIN)/g" $(TMP)/$(SITENAME).$(DOMAIN)
