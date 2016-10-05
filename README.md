@@ -2,6 +2,11 @@
 
 local-nginx docker container with everything built locally
 
+### Requirements
+
+You will need a locally built stretch image named local-stretch. I have another repo  [here](https://github.com/joshuacox/local-debian)
+that automates the creation of that.
+
 ### Usage
 
 You can quickly get a temp instance up with:
