@@ -197,7 +197,7 @@ site: SITENAME DOMAIN IP PORT NGINX_DATADIR
 	ls -lh $(NGINX_DATADIR)/etc/nginx/sites-enabled/ 
 	rm -Rf $(TMP)
 
-nusite: cleansite site mkcert
+nusite: cleansite site rm mkcert runprod
 
 cleansite:
 	-@rm SITENAME
