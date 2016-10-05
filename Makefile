@@ -44,8 +44,8 @@ runprod:
 	-d \
 	-p 80:80 \
 	-p 443:443 \
-	-v $(NGINX_DATADIR)/etc/nginx:/etc/nginx \
-	-v $(NGINX_DATADIR)/html:/usr/share/nginx/html \
+	-v "$(NGINX_DATADIR)/etc/nginx:/etc/nginx" \
+	-v "$(NGINX_DATADIR)/html:/usr/share/nginx/html" \
 	-v "$(NGINX_DATADIR)/etc/letsencrypt:/etc/letsencrypt" \
 	-t $(TAG)
 
@@ -79,6 +79,16 @@ TAG:
 		read -r -p "Enter the tag you wish to associate with this container [TAG]: " TAG; echo "$$TAG">>TAG; cat TAG; \
 	done ;
 
+REGISTRY:
+	@while [ -z "$$REGISTRY" ]; do \
+		read -r -p "Enter the registry you wish to associate with this container [REGISTRY]: " REGISTRY; echo "$$REGISTRY">>REGISTRY; cat REGISTRY; \
+	done ;
+
+REGISTRY_PORT:
+	@while [ -z "$$REGISTRY_PORT" ]; do \
+		read -r -p "Enter the port of the registry you wish to associate with this container, usually 5000 [REGISTRY_PORT]: " REGISTRY_PORT; echo "$$REGISTRY_PORT">>REGISTRY_PORT; cat REGISTRY_PORT; \
+	done ;
+
 rmall: rm
 
 grab: grabnginxdir mvdatadir
@@ -100,7 +110,7 @@ NGINX_DATADIR:
 		read -r -p "Enter the destination of the nginx data directory you wish to associate with this container [NGINX_DATADIR]: " NGINX_DATADIR; echo "$$NGINX_DATADIR">>NGINX_DATADIR; cat NGINX_DATADIR; \
 	done ;
 
-newcert: rmcertstuff CERTSITE CERTMAIL mkcert
+newcert: rmcertstuff CERTSITE CERTMAIL rm mkcert runprod
 
 rmcertstuff:
 	-@rm CERTSITE
@@ -119,5 +129,45 @@ CERTMAIL:
 mkcert:
 	$(eval CERTSITE := $(shell cat CERTSITE))
 	$(eval CERTMAIL := $(shell cat CERTMAIL))
-	cd ~/certbot
-	./certbot-auto certonly --standalone -n -d $(CERTSITE) --email "$(CERTMAIL)"
+	~/git/certbot/certbot-auto certonly --standalone -n -d $(CERTSITE) --email "$(CERTMAIL)"
+
+push: TAG REGISTRY REGISTRY_PORT
+	$(eval TAG := $(shell cat TAG))
+	$(eval REGISTRY := $(shell cat REGISTRY))
+	$(eval REGISTRY_PORT := $(shell cat REGISTRY_PORT))
+	docker tag $(TAG) $(REGISTRY):$(REGISTRY_PORT)/$(TAG)
+	docker push $(REGISTRY):$(REGISTRY_PORT)/$(TAG)
+
+local-nginx-svc.yaml: NGINX_DATADIR REGISTRY REGISTRY_PORT TAG NAME
+	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
+	$(eval REGISTRY := $(shell cat REGISTRY))
+	$(eval REGISTRY_PORT := $(shell cat REGISTRY_PORT))
+	$(eval TAG := $(shell cat TAG))
+	$(eval NAME := $(shell cat NAME))
+	cp -i templates/local-nginx-svc.template local-nginx-svc.yaml
+	sed -i "s!REPLACEME_DATADIR!$(NGINX_DATADIR)!g" local-nginx-svc.yaml
+	sed -i "s/REPLACEME_REGISTRY/$(REGISTRY)/g" local-nginx-svc.yaml
+	sed -i "s/REPLACEME_PORT_OF_REGISTRY/$(REGISTRY_PORT)/g" local-nginx-svc.yaml
+	sed -i "s!REPLACEME_TAG!$(TAG)!g" local-nginx-svc.yaml
+	sed -i "s!REPLACEME_NAME!$(NAME)!g" local-nginx-svc.yaml
+
+local-nginx-deploy.yaml: NGINX_DATADIR REGISTRY REGISTRY_PORT TAG NAME
+	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
+	$(eval REGISTRY := $(shell cat REGISTRY))
+	$(eval REGISTRY_PORT := $(shell cat REGISTRY_PORT))
+	$(eval TAG := $(shell cat TAG))
+	$(eval NAME := $(shell cat NAME))
+	cp -i templates/local-nginx-deploy.template local-nginx-deploy.yaml
+	sed -i "s!REPLACEME_DATADIR!$(NGINX_DATADIR)!g" local-nginx-deploy.yaml
+	sed -i "s/REPLACEME_REGISTRY/$(REGISTRY)/g" local-nginx-deploy.yaml
+	sed -i "s/REPLACEME_PORT_OF_REGISTRY/$(REGISTRY_PORT)/g" local-nginx-deploy.yaml
+	sed -i "s!REPLACEME_TAG!$(TAG)!g" local-nginx-deploy.yaml
+	sed -i "s!REPLACEME_NAME!$(NAME)!g" local-nginx-deploy.yaml
+
+k8s: k8deploy k8svc
+
+k8svc: local-nginx-svc.yaml
+	kubectl create -f local-nginx-svc.yaml
+
+k8deploy: local-nginx-deploy.yaml
+	kubectl create -f local-nginx-deploy.yaml
