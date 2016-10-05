@@ -23,7 +23,7 @@ You can `grab` the necessary config directories out of the running temp instance
 make grab
 ```
 
-then kill of the initial instance
+then kill off the initial instance
 
 ```
 make rm
