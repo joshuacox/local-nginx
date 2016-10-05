@@ -171,3 +171,34 @@ k8svc: local-nginx-svc.yaml
 
 k8deploy: local-nginx-deploy.yaml
 	kubectl create -f local-nginx-deploy.yaml
+
+site: SITENAME DOMAIN IP PORT NGINX_DATADIR
+	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
+	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
+	$(eval PORT := $(shell cat PORT))
+	$(eval IP := $(shell cat IP))
+	$(eval DOMAIN := $(shell cat DOMAIN))
+	$(eval SITENAME := $(shell cat SITENAME))
+	echo $(PORT)
+	echo $(SITENAME)
+	echo $(DOMAIN)
+	cp template/site.template $(TMP)/$(SITENAME).$(DOMAIN)
+	sed -i "s/REPLACEME_PORT/$(PORT)/g" $(TMP)/$(SITENAME).$(DOMAIN)
+	sed -i "s/REPLACEME_IP/$(IP)/g" $(TMP)/$(SITENAME).$(DOMAIN)
+	sed -i "s/REPLACEME_DOMAIN/$(DOMAIN)/g" $(TMP)/$(SITENAME).$(DOMAIN)
+	sed -i "s/REPLACEME_SITENAME/$(SITENAME)/g" $(TMP)/$(SITENAME).$(DOMAIN)
+	cat $(TMP)/$(SITENAME).$(DOMAIN)
+	sudo cp $(TMP)/$(SITENAME).$(DOMAIN) $(NGINX_DATADIR)/etc/nginx/sites-available/
+	cd $(NGINX_DATADIR)/etc/nginx/sites-enabled/ ; \
+	sudo rm -f $(SITENAME).$(DOMAIN)  ; \
+	sudo ln -s ../sites-available/$(SITENAME).$(DOMAIN) ./
+	ls -lh $(NGINX_DATADIR)/etc/nginx/sites-enabled/ 
+	rm -Rf $(TMP)
+
+nusite: cleansite site
+
+cleansite:
+	-@rm SITENAME
+	-@rm PORT
+	-@rm DOMAIN
+	-@rm IP
