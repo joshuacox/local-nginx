@@ -129,7 +129,7 @@ CERTMAIL:
 mkcert:
 	$(eval CERTSITE := $(shell cat CERTSITE))
 	$(eval CERTMAIL := $(shell cat CERTMAIL))
-	~/git/certbot/certbot-auto certonly --standalone -n -d $(CERTSITE) --email "$(CERTMAIL)"
+	~/git/certbot/certbot-auto certonly --agree-tos --standalone -n -d $(CERTSITE) --email "$(CERTMAIL)"
 
 push: TAG REGISTRY REGISTRY_PORT
 	$(eval TAG := $(shell cat TAG))
