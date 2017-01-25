@@ -44,7 +44,26 @@ cat git/local-nginx/NGINX_DATADIR
 /exports/nginx/datadir
 ```
 
+### Nusite
+
+```
+make nusite
+```
+
+will prompt you for a few details and then copy `templates/site.template` into your NGNIX_DATADIR
+
+for example for hostname.example.com, you would enter:
+
+```
+Enter the name you wish to associate with this container [SITENAME]: hostname
+hostname
+Enter the name you wish to associate with this container [DOMAIN]: example.com
+example.com
+```
+
 ### Let's Encrypt
+
+NOTE: the above `make nusite` does this automatically now
 
 you can automate the retrieval and creation of SSL/TLS certificates using Let's Encrypt
 

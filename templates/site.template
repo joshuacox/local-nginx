@@ -1,0 +1,38 @@
+
+upstream REPLACEME_SITENAME.REPLACEME_DOMAIN {
+  server REPLACEME_IP:REPLACEME_PORT fail_timeout=0;
+}
+server {
+# We only redirect from port 80 to 443
+# to enforce encryption
+  listen   80;
+  server_name REPLACEME_SITENAME.REPLACEME_DOMAIN;
+  return 301 https://REPLACEME_SITENAME.REPLACEME_DOMAIN$request_uri;
+}
+server {
+  listen 443 ssl http2;
+  server_name REPLACEME_SITENAME.REPLACEME_DOMAIN;
+# If you require basic auth you can use these lines as an example
+  #auth_basic "Restricted!";
+  #auth_basic_user_file /etc/nginx/private/httplock;
+
+# SSL
+  ssl_certificate /etc/letsencrypt/live/REPLACEME_SITENAME.REPLACEME_DOMAIN/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/REPLACEME_SITENAME.REPLACEME_DOMAIN/privkey.pem;
+        proxy_connect_timeout       75s;
+        proxy_send_timeout          75s;
+        proxy_read_timeout          75s;
+        proxy_http_version          1.1;
+        send_timeout                75s;
+  ssl_ciphers "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH";
+  ssl_prefer_server_ciphers on;
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+  location / {
+    proxy_set_header  Host $host;
+    proxy_set_header  X-Real-IP $remote_addr;
+    proxy_set_header  X-Forwarded-Proto https;
+    proxy_set_header  X-Forwarded-For $remote_addr;
+    proxy_set_header  X-Forwarded-Host $remote_addr;
+    proxy_pass http://REPLACEME_SITENAME.REPLACEME_DOMAIN;
+  }
+}

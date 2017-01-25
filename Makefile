@@ -171,3 +171,56 @@ k8svc: local-nginx-svc.yaml
 
 k8deploy: local-nginx-deploy.yaml
 	kubectl create -f local-nginx-deploy.yaml
+
+site: SITENAME DOMAIN IP PORT NGINX_DATADIR
+	$(eval TMP := $(shell mktemp -d --suffix=DOCKERTMP))
+	$(eval NGINX_DATADIR := $(shell cat NGINX_DATADIR))
+	$(eval PORT := $(shell cat PORT))
+	$(eval IP := $(shell cat IP))
+	$(eval DOMAIN := $(shell cat DOMAIN))
+	$(eval SITENAME := $(shell cat SITENAME))
+	echo $(PORT)
+	echo $(SITENAME)
+	echo $(DOMAIN)
+	echo "$(SITENAME).$(DOMAIN)" > CERTSITE
+	echo "webmaster@$(SITENAME).$(DOMAIN)" > CERTMAIL
+	cp templates/site.template $(TMP)/$(SITENAME).$(DOMAIN)
+	sed -i "s/REPLACEME_PORT/$(PORT)/g" $(TMP)/$(SITENAME).$(DOMAIN)
+	sed -i "s/REPLACEME_IP/$(IP)/g" $(TMP)/$(SITENAME).$(DOMAIN)
+	sed -i "s/REPLACEME_DOMAIN/$(DOMAIN)/g" $(TMP)/$(SITENAME).$(DOMAIN)
+	sed -i "s/REPLACEME_SITENAME/$(SITENAME)/g" $(TMP)/$(SITENAME).$(DOMAIN)
+	cat $(TMP)/$(SITENAME).$(DOMAIN)
+	sudo cp $(TMP)/$(SITENAME).$(DOMAIN) $(NGINX_DATADIR)/etc/nginx/sites-available/
+	cd $(NGINX_DATADIR)/etc/nginx/sites-enabled/ ; \
+	sudo rm -f $(SITENAME).$(DOMAIN)  ; \
+	sudo ln -s ../sites-available/$(SITENAME).$(DOMAIN) ./
+	ls -lh $(NGINX_DATADIR)/etc/nginx/sites-enabled/ 
+	rm -Rf $(TMP)
+
+nusite: cleansite site rm mkcert runprod
+
+cleansite:
+	-@rm SITENAME
+	-@rm PORT
+	-@rm DOMAIN
+	-@rm IP
+
+SITENAME:
+	@while [ -z "$$SITENAME" ]; do \
+		read -r -p "Enter the sitename you wish to associate with this container [SITENAME e.g. 'www']: " SITENAME; echo "$$SITENAME">>SITENAME; cat SITENAME; \
+	done ;
+
+DOMAIN:
+	@while [ -z "$$DOMAIN" ]; do \
+		read -r -p "Enter the DOMAIN you wish to associate with this container [DOMAIN e.g. 'example.com']: " DOMAIN; echo "$$DOMAIN">>DOMAIN; cat DOMAIN; \
+	done ;
+
+IP:
+	@while [ -z "$$IP" ]; do \
+		read -r -p "Enter the IP you wish to associate with this container [IP e.g. '192.168.1.133']: " IP; echo "$$IP">>IP; cat IP; \
+	done ;
+
+PORT:
+	@while [ -z "$$PORT" ]; do \
+		read -r -p "Enter the PORT you wish to associate with this container [PORT e.g. '8080']: " PORT; echo "$$PORT">>PORT; cat PORT; \
+	done ;
